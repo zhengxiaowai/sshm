@@ -3,19 +3,18 @@
 
 import click
 
-from utils import check_python
+from utils import check_python, check_cfg
+from commands import add_command
 
 @click.group()
 def cli():
     pass
 
-@cli.command()
-def sync():
-    click.echo('sync')
 
 @cli.command()
 def add():
     click.echo('add')
+    add_command()
 
 @cli.command()
 def delete():
@@ -29,7 +28,11 @@ def update():
 def list():
     click.echo('list')
 
+@cli.command()
+def sync():
+    click.echo('sync')
 
 if __name__ == '__main__':
     check_python()
+    check_cfg()
     cli()
