@@ -18,7 +18,7 @@ def cli():
 
 
 @cli.command()
-def create():
+def add():
     ssh_config = defaultdict(str)
 
     while True:
@@ -84,6 +84,12 @@ def connect(hostname):
     port = ssh_config['port']
     os.system('ssh {}@{} -p {}'.format(user, host, port))
 
+
+@cli.command()
+@click.argument('hostname')
+def delete(hostname):
+    path = '/{}.json'.format(hostname)
+    dbxc.delete(path) 
 
 if __name__ == '__main__':
     cli()
