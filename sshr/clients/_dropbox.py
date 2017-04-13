@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 import dropbox
 import readline
 from singleton import Singleton
-
+from utils import sshr_cfg_path
 
 class DropboxClient(Singleton):
     def __init__(self):
@@ -13,7 +14,12 @@ class DropboxClient(Singleton):
     
     def init(self):
         access_token = raw_input('Dropbox Access Token: ') 
-
+        cfg = sshr_cfg_path()
+        with open(cfg, 'w') as f:
+            json.dump({
+                'platform': 'dropbox',
+                'access_token': access_token
+            }, f, indent=4)
 
     def upload(self, f, path, **kwargs):
         return self.dbx.files_upload(f, path, **kwargs)

@@ -18,3 +18,5 @@ def mkdir(path):
 def sshr_cfg_path():
     home_env = os.getenv('HOME', None)
     cfg_path = os.path.join(home_env, '.sshr')
+    return cfg_path
+
