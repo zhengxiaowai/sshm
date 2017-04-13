@@ -4,16 +4,20 @@
 import json
 import dropbox
 import readline
-from singleton import Singleton
+from six.moves import input as raw_input
+from clients.singleton import Singleton
 from utils import sshr_cfg_path
 
+
 class DropboxClient(Singleton):
-    def __init__(self):
-        self.dbx = dropbox.Dropbox(
-            'RGvwyNkaMBAAAAAAAAAAF4HNVenKl22UX7gy6GJvqEtPd2D0rnNWzY_157pZxHT0')
-    
-    def init(self):
-        access_token = raw_input('Dropbox Access Token: ') 
+    def __init__(self, **kwargs):
+        # RGvwyNkaMBAAAAAAAAAAF4HNVenKl22UX7gy6GJvqEtPd2D0rnNWzY_157pZxHT0
+        access_token = kwargs['access_token']
+        self.dbx = dropbox.Dropbox(access_token)
+
+    @staticmethod
+    def init():
+        access_token = raw_input('Dropbox Access Token: ')
         cfg = sshr_cfg_path()
         with open(cfg, 'w') as f:
             json.dump({

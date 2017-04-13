@@ -5,20 +5,23 @@ import os
 import readline
 import click
 import json
+from six.moves import input as raw_input
 from dropbox.files import WriteMode
 from collections import defaultdict
 from clients import get_client, init_client, get_supported_platform
-from utils import prompt_line, mkdir
+from utils import prompt_line, mkdir, convert_binary_type
 
 
 @click.group()
 def cli():
     pass
 
+
 @cli.command()
-@click.option('--platform', type=click.Choice(get_supported_platform()))
+@click.option('--platform', required=True, type=click.Choice(get_supported_platform()))
 def init(platform):
     init_client(platform)
+
 
 @cli.command()
 def add():
@@ -66,12 +69,12 @@ def add():
 
     if identityfile:
         with open(identityfile) as f:
-            cert_content = f.read()
+            cert_content = convert_binary_type(f.read())
             cert_filename = '/{}.cert'.format(hostname)
             client.upload(cert_content, cert_filename, mode=overwrite_mode)
 
     config_filename = '/{}.json'.format(hostname)
-    ssh_config = json.dumps(ssh_config, indent=4)
+    ssh_config = convert_binary_type(json.dumps(ssh_config, indent=4))
     client.upload(ssh_config, config_filename, mode=overwrite_mode)
 
 
@@ -123,7 +126,7 @@ def connect(hostname):
 
         content = client.download(ssh_cert_path)
         with open(local_ssh_cert_path, 'w') as f:
-            f.write(content)
+            f.write(str(content))
 
         os.chmod(local_ssh_cert_path, 0o600)
 
@@ -138,6 +141,7 @@ def connect(hostname):
         ssh_command = 'ssh {}@{} -p {}'.format(
             user, host, port)
 
+    # mac Sierra(10.12.2)   ssh-add -K
     os.system(ssh_command)
 
     if local_ssh_cert_path:
@@ -146,4 +150,3 @@ def connect(hostname):
 
 if __name__ == '__main__':
     cli()
-

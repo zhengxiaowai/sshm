@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import os
+import json
 import importlib
 
 from glob import glob
+from utils import sshr_cfg_path
+
 
 def get_supported_platform():
     dirname = os.path.dirname(__file__)
-    paths = glob(os.path.join(dirname, '_*.py'))        
+    paths = glob(os.path.join(dirname, '_*.py'))
 
     platforms = []
     for path in paths:
@@ -21,12 +24,23 @@ def get_supported_platform():
 
     return platforms
 
+
 def get_client():
-    pass
+    cfg_path = sshr_cfg_path()
+    cfg = {}
+
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    client_class = _import_client(cfg['platform'])
+    return client_class(**cfg)
+
 
 def init_client(platform):
+    client_class = _import_client(platform)
+    client_class.init()
+
+
+def _import_client(platform):
     module_path = 'clients._{}'.format(platform)
     module = importlib.import_module(module_path)
-    client_class = getattr(module, '{}{}'.format(platform.capitalize(), 'Client')) 
-    client = client_class()
-    client.init()
+    return getattr(module, '{}{}'.format(platform.capitalize(), 'Client'))
