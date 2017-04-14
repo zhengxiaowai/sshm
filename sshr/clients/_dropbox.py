@@ -30,7 +30,6 @@ class DropboxClient(Singleton):
         return self.dbx.files_upload(f, path, **kwargs)
 
     def list(self, path, **kwargs):
-        path = self._wrap_path(path)
         c = self.dbx.files_list_folder(path, **kwargs)
         return [entry.name for entry in c.entries]
 
