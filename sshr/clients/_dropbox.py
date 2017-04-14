@@ -26,14 +26,23 @@ class DropboxClient(Singleton):
             }, f, indent=4)
 
     def upload(self, f, path, **kwargs):
+        path = self._wrap_path(path)
         return self.dbx.files_upload(f, path, **kwargs)
 
     def list(self, path, **kwargs):
-        return self.dbx.files_list_folder(path, **kwargs)
+        path = self._wrap_path(path)
+        c = self.dbx.files_list_folder(path, **kwargs)
+        return [ entry.name for entry in c.entries]
 
     def download(self, path):
+        path = self._wrap_path(path)
         _, res = self.dbx.files_download(path)
         return res.content
 
     def delete(self, path):
+        path = self._wrap_path(path)
         self.dbx.files_delete(path)
+
+    def _wrap_path(self, path):
+        return  '/' + path
+

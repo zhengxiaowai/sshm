@@ -70,10 +70,10 @@ def add():
     if identityfile:
         with open(identityfile) as f:
             cert_content = convert_binary_type(f.read())
-            cert_filename = '/{}.cert'.format(hostname)
+            cert_filename = '{}.cert'.format(hostname)
             client.upload(cert_content, cert_filename, mode=overwrite_mode)
 
-    config_filename = '/{}.json'.format(hostname)
+    config_filename = '{}.json'.format(hostname)
     ssh_config = convert_binary_type(json.dumps(ssh_config, indent=4))
     client.upload(ssh_config, config_filename, mode=overwrite_mode)
 
@@ -81,8 +81,7 @@ def add():
 @cli.command()
 def list():
     client = get_client()
-    for entry in client.list('').entries:
-        filename = entry.name
+    for filename in client.list(''):
         if filename.endswith('.json'):
             click.echo(os.path.splitext(filename)[0])
 
@@ -91,7 +90,7 @@ def list():
 @click.argument('hostname')
 def info(hostname):
     client = get_client()
-    path = '/{}.json'.format(hostname)
+    path = '{}.json'.format(hostname)
     content = client.download(path)
     click.echo(content)
 
@@ -100,8 +99,8 @@ def info(hostname):
 @click.argument('hostname')
 def delete(hostname):
     client = get_client()
-    ssh_json = '/{}.json'.format(hostname)
-    ssh_cert = '/{}.cert'.format(hostname)
+    ssh_json = '{}.json'.format(hostname)
+    ssh_cert = '{}.cert'.format(hostname)
     client.delete(ssh_json)
     client.delete(ssh_cert)
 
@@ -110,13 +109,13 @@ def delete(hostname):
 @click.argument('hostname')
 def connect(hostname):
     client = get_client()
-    ssh_json = '/{}.json'.format(hostname)
+    ssh_json = '{}.json'.format(hostname)
     content = client.download(ssh_json)
     ssh_config = json.loads(content)
     local_ssh_cert_path = ''
 
     if ssh_config.get('identityfile', None):
-        ssh_cert_path = '/{}.cert'.format(hostname)
+        ssh_cert_path = '{}.cert'.format(hostname)
         ssh_cert_filename = '{}.cert'.format(hostname)
         home_env = os.getenv('HOME', None)
         local_ssh_cert_dir = os.path.join(home_env, '.sshr_certs')
