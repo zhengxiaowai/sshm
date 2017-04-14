@@ -10,12 +10,13 @@ from six.moves.urllib_parse import urljoin
 from clients.singleton import Singleton
 from utils import sshr_cfg_path
 
+
 class QiniuClient(Singleton):
     def __init__(self, **kwargs):
         self.access_key = kwargs['access_key']
         self.secert_key = kwargs['secert_key']
         self.bucket_name = kwargs['bucket_name']
-        self.domain= kwargs['domain']
+        self.domain = kwargs['domain']
         self.q = qiniu.Auth(self.access_key, self.secert_key)
 
     @staticmethod
@@ -60,10 +61,9 @@ class QiniuClient(Singleton):
         token = self._get_token()
         bucket = qiniu.BucketManager(self.q)
         ret, info = bucket.delete(self.bucket_name, path)
-    
+
     def _get_token(self):
         return self.q.upload_token(self.bucket_name)
 
     def _wrap_path(self, path):
         return 'sshr-' + path
-

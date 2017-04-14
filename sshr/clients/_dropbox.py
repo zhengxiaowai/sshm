@@ -32,7 +32,7 @@ class DropboxClient(Singleton):
     def list(self, path, **kwargs):
         path = self._wrap_path(path)
         c = self.dbx.files_list_folder(path, **kwargs)
-        return [ entry.name for entry in c.entries]
+        return [entry.name for entry in c.entries]
 
     def download(self, path):
         path = self._wrap_path(path)
@@ -44,5 +44,4 @@ class DropboxClient(Singleton):
         self.dbx.files_delete(path)
 
     def _wrap_path(self, path):
-        return  '/' + path
-
+        return '/' + path
