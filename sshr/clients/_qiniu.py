@@ -47,7 +47,7 @@ class QiniuClient(Singleton):
         bucket = qiniu.BucketManager(self.q)
 
         ret, eof, info = bucket.list(self.bucket_name, 'sshr-', None, None)
-        return [item['key'] for item in ret.get('items')]
+        return [item['key'][5:] for item in ret.get('items')]
 
     def download(self, path):
         path = self._wrap_path(path)
