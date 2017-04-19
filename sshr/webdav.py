@@ -7,6 +7,7 @@ import requests
 import xmltodict
 import logging
 from collections import namedtuple
+from _compat import file
 from six.moves.urllib_parse import urlparse, urljoin
 
 logger = logging.getLogger('webdav')
@@ -48,6 +49,9 @@ class WebDav(object):
             netloc = host + ':' + port
             url = schema._replace(netloc=netloc).geturl()
 
+        if not path.endswith('/'):
+            path += '/'
+
         self.baseurl = urljoin(url, path)
         self.session = requests.session()
         self.session.verify = verify_ssl
@@ -70,7 +74,7 @@ class WebDav(object):
         response = self.session.request(
             method, real_url, allow_redirects=False, **kwargs)
 
-        print(response.status_code)
+        logger.debug(response.status_code)
         status_code = response.status_code
         if status_code not in expected_code:
             raise WebDavError('invalid http status code {}, not in {}'.format(
@@ -111,7 +115,7 @@ class WebDav(object):
             self._request('PUT', path, (200, 201, 204), data=_fileobj)
             _fileobj.close()
         else:
-            raise WebDavError('invalid file')
+            raise WebDavError('invalid fileobj')
 
 
 if __name__ == '__main__':
@@ -119,8 +123,8 @@ if __name__ == '__main__':
         url='https://dav.jianguoyun.com/dav/',
         username='497143503@qq.com',
         password='anq9dhbhtkxcp2m7',
-            path='sshr/')
+            path='sshr')
 
     # webdav.ls()
-    webdav.upload(path='test/cli.py',
-                  local_path='/home/hexiangyu/sshr/sshr/cli.py')
+    webdav.upload(path='cli.py',
+                  local_path='/Users/seanho/codelab/sshr/sshr/cli.py')
