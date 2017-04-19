@@ -6,8 +6,9 @@ import os
 import requests
 import xmltodict
 import logging
-from collections import namedtuple
 from _compat import file
+from contextlib import closing
+from collections import namedtuple
 from six.moves.urllib_parse import urlparse, urljoin
 
 logger = logging.getLogger('webdav')
@@ -19,6 +20,8 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
+CHUNK_SIZE_BYTES = 1024 * 1024
+ALLOWED_MAX_SIZE_BYTES = CHUNK_SIZE_BYTES * 50
 
 ITEM_ATTRS = [
     'href',
@@ -112,10 +115,30 @@ class WebDav(object):
             _fileobj = fileobj
 
         if isinstance(_fileobj, file):
+            # stream upload
+            # http://docs.python-requests.org/zh_CN/latest/user/advanced.html#streaming-uploads
             self._request('PUT', path, (200, 201, 204), data=_fileobj)
             _fileobj.close()
         else:
             raise WebDavError('invalid fileobj')
+
+    def _fetch(self, path):
+        # stream download
+        # http://docs.python-requests.org/zh_CN/latest/user/advanced.html#body-content-workflow
+        with closing(self._request('GET', path, 200, stream=True)) as response:
+            if int(response.headers['content-length']) > ALLOWED_MAX_SIZE_BYTES:
+                for chunk in response.iter_content(CHUNK_SIZE_BYTES):
+                    yield chunk
+            else:
+                yield response.content
+
+    def download(self, path, local_path):
+        with open(local_path, 'wb') as f:
+            for chunk in self._fetch(path):
+                f.write(chunk)
+
+    def delete(self, path):
+        self._request('DELETE', path, 204)
 
 
 if __name__ == '__main__':
@@ -126,5 +149,4 @@ if __name__ == '__main__':
             path='sshr')
 
     # webdav.ls()
-    webdav.upload(path='cli.py',
-                  local_path='/Users/seanho/codelab/sshr/sshr/cli.py')
+    webdav.download(path='test.pdf', local_path='./test.pdf')
