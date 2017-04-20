@@ -144,14 +144,4 @@ class WebDav(object):
 
     def delete(self, path):
         self._request('DELETE', path, (204, 404))
-
-
-if __name__ == '__main__':
-    webdav = WebDav(
-        url='https://dav.jianguoyun.com/dav/',
-        username='497143503@qq.com',
-        password='anq9dhbhtkxcp2m7',
-            path='sshr')
-
-    # webdav.ls()
-    webdav.download(path='test.pdf', local_path='./test.pdf')
+        

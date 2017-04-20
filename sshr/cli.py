@@ -6,10 +6,9 @@ import readline
 import click
 import json
 from six.moves import input as raw_input
-from dropbox.files import WriteMode
 from collections import defaultdict
 from clients import get_client, init_client, get_supported_platform
-from utils import prompt_line, mkdir, convert_binary_type
+from utils import prompt_line, mkdir
 
 
 @click.group()
@@ -63,19 +62,19 @@ def add():
         else:
             continue
 
-    overwrite_mode = WriteMode('overwrite')
+    
     hostname = ssh_config['hostname']
     identityfile = ssh_config['identityfile']
 
     if identityfile:
         with open(identityfile) as f:
-            cert_content = convert_binary_type(f.read())
+            cert_content = f.read()
             cert_filename = '{}.cert'.format(hostname)
-            client.upload(cert_content, cert_filename, mode=overwrite_mode)
+            client.upload(cert_content, cert_filename)
 
     config_filename = '{}.json'.format(hostname)
-    ssh_config = convert_binary_type(json.dumps(ssh_config, indent=4))
-    client.upload(ssh_config, config_filename, mode=overwrite_mode)
+    ssh_config = json.dumps(ssh_config, indent=4)
+    client.upload(ssh_config, config_filename)
 
 
 @cli.command()

@@ -34,7 +34,7 @@ class WebdavClient(Singleton):
             }, f, indent=4)
 
     def upload(self, data, path, **kwargs):
-        hack_fileobj = StringIO(data)
+        hack_fileobj = StringIO(str(data))
         self.dav.upload(path=path, fileobj=hack_fileobj)
 
     def list(self, path, **kwargs):
@@ -42,11 +42,11 @@ class WebdavClient(Singleton):
         return [item.displayname for item in items]
 
     def download(self, path):
-        content = ''
+        chunks = ''
         for chunk in self.dav._fetch(path):
-            content += chunk
-
+            chunks += chunk.decode('utf8')
+        
+        content = chunks
         return content
-
     def delete(self, path):
         self.dav.delete(path)

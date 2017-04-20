@@ -6,12 +6,12 @@ import dropbox
 import readline
 from six.moves import input as raw_input
 from clients.singleton import Singleton
-from utils import sshr_cfg_path
+from dropbox.files import WriteMode
+from utils import sshr_cfg_path, convert_binary_type
 
 
 class DropboxClient(Singleton):
     def __init__(self, **kwargs):
-        # RGvwyNkaMBAAAAAAAAAAF4HNVenKl22UX7gy6GJvqEtPd2D0rnNWzY_157pZxHT0
         access_token = kwargs['access_token']
         self.dbx = dropbox.Dropbox(access_token)
 
@@ -25,9 +25,11 @@ class DropboxClient(Singleton):
                 'access_token': access_token
             }, f, indent=4)
 
-    def upload(self, f, path, **kwargs):
+    def upload(self, data, path, **kwargs):
+        overwrite_mode = WriteMode('overwrite')
         path = self._wrap_path(path)
-        return self.dbx.files_upload(f, path, **kwargs)
+        bin_data = convert_binary_type(data)
+        return self.dbx.files_upload(bin_data, path, mode=overwrite_mode, **kwargs)
 
     def list(self, path, **kwargs):
         c = self.dbx.files_list_folder(path, **kwargs)

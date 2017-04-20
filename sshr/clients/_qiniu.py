@@ -8,7 +8,7 @@ import requests
 from six.moves import input as raw_input
 from six.moves.urllib_parse import urljoin
 from clients.singleton import Singleton
-from utils import sshr_cfg_path
+from utils import sshr_cfg_path, convert_binary_type
 
 
 class QiniuClient(Singleton):
@@ -39,7 +39,7 @@ class QiniuClient(Singleton):
     def upload(self, data, path, **kwargs):
         path = self._wrap_path(path)
         token = self._get_token()
-        return qiniu.put_data(token, path, data)
+        return qiniu.put_data(token, path, convert_binary_type(data))
 
     def list(self, path, **kwargs):
         path = self._wrap_path(path)
