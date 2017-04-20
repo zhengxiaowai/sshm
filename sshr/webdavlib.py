@@ -144,4 +144,3 @@ class WebDav(object):
 
     def delete(self, path):
         self._request('DELETE', path, (204, 404))
-        

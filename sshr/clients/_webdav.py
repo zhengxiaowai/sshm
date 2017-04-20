@@ -45,8 +45,9 @@ class WebdavClient(Singleton):
         chunks = ''
         for chunk in self.dav._fetch(path):
             chunks += chunk.decode('utf8')
-        
+
         content = chunks
         return content
+
     def delete(self, path):
         self.dav.delete(path)

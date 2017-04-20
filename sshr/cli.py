@@ -62,7 +62,6 @@ def add():
         else:
             continue
 
-    
     hostname = ssh_config['hostname']
     identityfile = ssh_config['identityfile']
 
