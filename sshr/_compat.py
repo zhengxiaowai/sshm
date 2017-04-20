@@ -5,6 +5,6 @@ import six
 
 if six.PY3:
     from io import IOBase
-    file = IOBase
+    file = (IOBase, six.StringIO)
 else:
-    file = file
+    file = (file, six.StringIO)

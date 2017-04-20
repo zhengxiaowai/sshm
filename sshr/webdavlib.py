@@ -11,6 +11,11 @@ from contextlib import closing
 from collections import namedtuple
 from six.moves.urllib_parse import urlparse, urljoin
 
+__all__ = [
+    'WebDav',
+    'WebDavError'
+]
+
 logger = logging.getLogger('webdav')
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
@@ -138,7 +143,7 @@ class WebDav(object):
                 f.write(chunk)
 
     def delete(self, path):
-        self._request('DELETE', path, 204)
+        self._request('DELETE', path, (204, 404))
 
 
 if __name__ == '__main__':
