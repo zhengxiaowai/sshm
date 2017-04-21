@@ -1,6 +1,4 @@
-<div style="text-align:center">
-  <img src='./ext/sshr-logo.png'>
-</div>
+<p align="center"><img width="200px" src="ext/sshr-logo.png"></p>
 
 # SSHR
 
