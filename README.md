@@ -1,5 +1,11 @@
-# sshr
-The sshm is a ssh config manager which sync by webdav
+<div style="text-align:center">
+  <img src='./ext/sshr-logo.png'>
+</div>
+
+# SSHR
+
+SSHR is a ssh configuration manager tool which help to ssh everywhere.
+
 
 # Development
 
