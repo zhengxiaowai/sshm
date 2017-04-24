@@ -12,8 +12,7 @@ class SSHRAdmin(object):
 
     def get_client(self, client_name):
         return self._client_map.get(client_name, None)
-    
+
     @property
     def clients(self):
         return self._client_map.keys()
-        

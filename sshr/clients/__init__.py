@@ -5,6 +5,7 @@ import json
 from utils import sshr_cfg_path
 from .admin import sshr_admin
 
+
 def get_supported_platform():
     return sshr_admin.clients
 
@@ -22,4 +23,3 @@ def get_client():
 def init_client(platform):
     client_class = sshr_admin.get_client(platform)
     client_class.init()
-
