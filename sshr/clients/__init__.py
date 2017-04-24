@@ -1,28 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import json
-import importlib
-
-from glob import glob
 from utils import sshr_cfg_path
-
+from .admin import sshr_admin
 
 def get_supported_platform():
-    dirname = os.path.dirname(__file__)
-    paths = glob(os.path.join(dirname, '_*.py'))
-
-    platforms = []
-    for path in paths:
-        filename = os.path.basename(path)
-        if filename == '__init__.py':
-            continue
-
-        sufix = filename.index('.py')
-        platforms.append(filename[1: sufix])
-
-    return platforms
+    return sshr_admin.clients
 
 
 def get_client():
@@ -31,16 +15,11 @@ def get_client():
 
     with open(cfg_path) as f:
         cfg = json.load(f)
-    client_class = _import_client(cfg['platform'])
-    return client_class(**cfg)
+    client = cfg['platform']
+    return sshr_admin.get_client(client)
 
 
 def init_client(platform):
-    client_class = _import_client(platform)
+    client_class = sshr_admin.get_client(platform)
     client_class.init()
 
-
-def _import_client(platform):
-    module_path = 'clients._{}'.format(platform)
-    module = importlib.import_module(module_path)
-    return getattr(module, '{}{}'.format(platform.capitalize(), 'Client'))

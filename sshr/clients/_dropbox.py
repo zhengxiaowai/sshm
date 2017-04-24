@@ -5,7 +5,7 @@ import json
 import dropbox
 import readline
 from six.moves import input as raw_input
-from clients.singleton import Singleton
+from ._base  import Singleton
 from dropbox.files import WriteMode
 from utils import sshr_cfg_path, convert_binary_type
 

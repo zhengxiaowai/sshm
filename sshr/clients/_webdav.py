@@ -6,7 +6,7 @@ import dropbox
 import readline
 from six import StringIO
 from six.moves import input as raw_input
-from clients.singleton import Singleton
+from ._base import Singleton
 from utils import sshr_cfg_path
 from webdavlib import WebDav
 

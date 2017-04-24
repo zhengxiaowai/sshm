@@ -7,7 +7,7 @@ import qiniu
 import requests
 from six.moves import input as raw_input
 from six.moves.urllib_parse import urljoin
-from clients.singleton import Singleton
+from ._base import Singleton
 from utils import sshr_cfg_path, convert_binary_type
 
 
